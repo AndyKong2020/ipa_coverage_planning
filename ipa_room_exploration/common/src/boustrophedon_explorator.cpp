@@ -240,19 +240,19 @@ void BoustrophedonExplorer::computeCellDecompositionWithRotation(const cv::Mat& 
 	room_rotation.rotateRoom(room_map, rotated_room_map, R, bbox);
 
 #ifdef DEBUG_VISUALIZATION
-//	// testing
-//	cv::Mat room_map_disp = room_map.clone();
+	// testing
+	cv::Mat room_map_disp = room_map.clone();
 //	cv::circle(room_map_disp, starting_position, 3, cv::Scalar(160), cv::FILLED);
-//	cv::imshow("room_map", room_map_disp);
-//	std::vector<cv::Point> tester;
-//	tester.push_back(cv::Point(10,10));
-//	cv::Mat tester_map = room_map.clone();
-//	cv::circle(tester_map, tester[0], 3, cv::Scalar(127), cv::FILLED);
-//	cv::transform(tester, tester, R);
-//	cv::circle(rotated_room_map, tester[0], 3, cv::Scalar(127), cv::FILLED);
-//	cv::imshow("original", tester_map);
-//	cv::imshow("rotated_im.png", rotated_room_map);
-//	cv::waitKey();
+	cv::imshow("room_map", room_map_disp);
+	std::vector<cv::Point> tester;
+	tester.push_back(cv::Point(10,10));
+	cv::Mat tester_map = room_map.clone();
+	cv::circle(tester_map, tester[0], 3, cv::Scalar(127), cv::FILLED);
+	cv::transform(tester, tester, R);
+	cv::circle(rotated_room_map, tester[0], 3, cv::Scalar(127), cv::FILLED);
+	cv::imshow("original", tester_map);
+	cv::imshow("rotated_im.png", rotated_room_map);
+	cv::waitKey();
 #endif
 
 	// *********************** II. Sweep a slice trough the map and mark the found cell boundaries. ***********************
@@ -544,9 +544,9 @@ int BoustrophedonExplorer::mergeCells(cv::Mat& cell_map, cv::Mat& cell_map_label
 		}
 	}
 #ifdef DEBUG_VISUALIZATION
-//	printCells(cell_index_mapping);
-//	cv::imshow("cell_map",cell_map);
-//	cv::waitKey();
+	printCells(cell_index_mapping);
+	cv::imshow("cell_map",cell_map);
+	cv::waitKey();
 #endif
 
 	// iteratively merge cells
@@ -606,9 +606,9 @@ void BoustrophedonExplorer::mergeCellsSelection(cv::Mat& cell_map, cv::Mat& cell
 		it = area_to_region_id_mapping.begin();
 
 #ifdef DEBUG_VISUALIZATION
-//		printCells(cell_index_mapping);
-//		cv::imshow("cell_map",cell_map);
-//		cv::waitKey();
+		printCells(cell_index_mapping);
+		cv::imshow("cell_map",cell_map);
+		cv::waitKey();
 #endif
 	}
 
@@ -944,7 +944,18 @@ void BoustrophedonExplorer::computeBoustrophedonPath(const cv::Mat& room_map, co
 	for(std::vector<cv::Point>::iterator point=current_fov_path.begin(); point!=current_fov_path.end(); ++point)
 		fov_middlepoint_path_part.push_back(cv::Point2f(point->x, point->y));
 	cv::transform(fov_middlepoint_path_part, fov_middlepoint_path_part, R_cell_inv);
+
+    if (fov_middlepoint_path.size() > 0){
+        AStarPlanner path_planner;
+        std::vector<cv::Point> astar_panned_path_part;
+        path_planner.planPath(room_map, fov_middlepoint_path.back(), fov_middlepoint_path_part.front(), 1.0, 0.6, 0.05, 0,
+                              &astar_panned_path_part);
+        fov_middlepoint_path.insert(fov_middlepoint_path.end(), astar_panned_path_part.begin(), astar_panned_path_part.end());
+    }
+
 	fov_middlepoint_path.insert(fov_middlepoint_path.end(), fov_middlepoint_path_part.begin(), fov_middlepoint_path_part.end());
+
+    //path_planner.~AStarPlanner();
 
 #ifdef DEBUG_VISUALIZATION
 	cv::Mat cell_fov_path_disp = cell_map.clone();
@@ -1076,9 +1087,9 @@ void BoustrophedonVariantExplorer::mergeCellsSelection(cv::Mat& cell_map, cv::Ma
 		it = area_to_region_id_mapping.begin();
 
 #ifdef DEBUG_VISUALIZATION
-//		printCells(cell_index_mapping);
-//		cv::imshow("cell_map",cell_map);
-//		cv::waitKey();
+		printCells(cell_index_mapping);
+		cv::imshow("cell_map",cell_map);
+		cv::waitKey();
 #endif
 	}
 
