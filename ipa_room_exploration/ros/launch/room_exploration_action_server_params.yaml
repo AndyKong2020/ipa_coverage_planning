@@ -97,12 +97,12 @@ tsp_solver_timeout: 600
 # min area a boustrophedon cell (i.e. a boustrophedon region of the map) must have to be determined for the path generation
 # [pixel^2]
 # double
-min_cell_area: 200.0      #10.0
+min_cell_area: 500.0      #10.0
 
 # distance between two points when generating the (line) path
 # [pixel], where one pixel is the size of one cell in the navigation grid map
 # double
-path_eps: 6.0
+path_eps: 6000.0
 
 # the additional offset of the grid to obstacles, i.e. allows to displace the grid by more than the standard half_grid_size from obstacles
 # [m]
